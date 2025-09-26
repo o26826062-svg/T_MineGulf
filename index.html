@@ -1,0 +1,722 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Khalij Mine — v10</title>
+<style>
+  /* ساده و موبایل-دوست، با ظاهری ماینکرافتی */
+  :root{
+    --bg1:#071022; --card:rgba(255,255,255,0.03);
+    --accent:#16a34a; --muted:#94a3b8; --glass:rgba(255,255,255,0.04);
+    --warn:#f59e0b;
+  }
+  *{box-sizing:border-box;font-family: Vazirmatn, "Segoe UI", Roboto, Arial; }
+  body{margin:0;background:linear-gradient(180deg,var(--bg1),#081026), url('https://i.ibb.co/2K08p0z/minecraft-bg.jpg') center/cover fixed; color:#e6eef8; -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:980px;margin:12px auto;padding:12px}
+  header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px;background:rgba(0,0,0,0.35);border-radius:10px}
+  .brand{display:flex;gap:10px;align-items:center}
+  .logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(45deg,#8b5cf6,#06b6d4);display:flex;align-items:center;justify-content:center;font-weight:900}
+  nav{display:flex;gap:8px;flex-wrap:wrap}
+  .nav-btn{padding:8px 10px;border-radius:8px;background:var(--glass);border:1px solid rgba(255,255,255,0.03);cursor:pointer;font-weight:800}
+  .nav-btn.active{background:linear-gradient(90deg,var(--accent),#10b981);color:#042018}
+  main{margin-top:12px}
+  section.card{display:none;background:rgba(2,6,23,0.6);padding:12px;border-radius:12px;box-shadow:0 8px 30px rgba(2,6,23,0.6)}
+  section.card.active{display:block}
+  .grid{display:grid;gap:12px}
+  .grid.cols-3{grid-template-columns:repeat(3,1fr)}
+  .card-small{background:rgba(255,255,255,0.03);padding:10px;border-radius:10px}
+  .small{font-size:13px;color:var(--muted)}
+  .btn{padding:8px 12px;border-radius:8px;border:none;cursor:pointer;font-weight:800}
+  .btn.primary{background:var(--accent);color:#042018}
+  .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:inherit}
+  .btn.warn{background:var(--warn);color:#042018}
+  input.input, textarea.input, select.input{width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
+  table{width:100%;border-collapse:collapse;margin-top:8px}
+  th,td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.03);text-align:right}
+  .avatar{width:40px;height:40px;border-radius:8px;object-fit:cover}
+  footer{margin-top:14px;text-align:center;color:var(--muted);font-size:13px}
+  @media(min-width:900px){ .grid.cols-3{grid-template-columns:repeat(3,1fr)} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo">KM</div>
+      <div>
+        <div style="font-weight:900">Khalij Mine</div>
+        <div class="small">روبیکا: <b>@khalij_mine</b></div>
+      </div>
+    </div>
+
+    <nav id="mainNav">
+      <button class="nav-btn" data-target="home">خانه</button>
+      <button class="nav-btn" data-target="rules">قوانین</button>
+      <button class="nav-btn" data-target="shop">فروشگاه</button>
+      <button class="nav-btn" data-target="team">تیم مدیریت</button>
+      <button class="nav-btn" data-target="leader">برترین‌ها</button>
+      <button class="nav-btn" data-target="chat">چت</button>
+      <button class="nav-btn" id="btn-login">ورود</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- HOME -->
+    <section id="home" class="card active">
+      <div class="grid cols-3">
+        <div class="card-small">
+          <h3 style="margin:0">ایونت بعدی — پنجشنبهٔ بعدی ساعت ۱۸</h3>
+          <div class="small">جایزه: رنک ویژه برای برنده</div>
+          <div id="countdown" style="margin-top:8px;font-weight:900"></div>
+        </div>
+        <div class="card-small">
+          <h4 style="margin:0">وضعیت سرور</h4>
+          <div class="small" style="margin-top:6px">وضعیت: <span id="server-status">—</span></div>
+          <div class="small" style="margin-top:6px">پلیرهای آنلاین (لوکال): <span id="server-players">0</span></div>
+        </div>
+        <div class="card-small">
+          <h4 style="margin:0">خوش آمدی!</h4>
+          <div class="small" style="margin-top:6px">برای دسترسی به پنل‌ها وارد شو. ثبت‌نام غیرفعال است؛ ادمین‌ها پلیرها را اضافه می‌کنند.</div>
+          <div style="margin-top:8px"><button class="btn primary" id="cta-login">ورود</button></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RULES -->
+    <section id="rules" class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h3 style="margin:0">قوانین سرور</h3>
+        <div>
+          <button class="btn ghost" id="edit-rules-btn" style="display:none">ویرایش</button>
+          <button class="btn primary" id="save-rules-btn" style="display:none">ذخیره</button>
+        </div>
+      </div>
+      <div style="margin-top:8px">
+        <div id="rules-content" class="small" style="line-height:1.9"></div>
+        <textarea id="rules-editor" class="input" style="display:none;height:140px;margin-top:8px"></textarea>
+      </div>
+    </section>
+
+    <!-- SHOP -->
+    <section id="shop" class="card">
+      <h3>فروشگاه — خرید رنک با سکه</h3>
+      <div class="small">هر رنک ۳۰ روز فعال می‌شود. هر بازیکن فقط یک رنک هم‌زمان می‌تواند داشته باشد.</div>
+      <div id="products" style="margin-top:12px" class="grid cols-3"></div>
+      <div style="margin-top:12px" class="card-small">
+        <div style="display:flex;gap:8px;align-items:center">
+          <input id="coupon-input" class="input" placeholder="کد تخفیف (در صورت داشتن)" />
+          <button class="btn ghost" id="apply-coupon">اعمال</button>
+        </div>
+        <div class="small" style="margin-top:8px">برای پرداخت از سکه داخلی استفاده می‌شود؛ اگر سکه کم دارید، از ادمین درخواست کنید.</div>
+      </div>
+    </section>
+
+    <!-- TEAM -->
+    <section id="team" class="card">
+      <h3>تیم مدیریت</h3>
+      <div id="team-list" style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px"></div>
+    </section>
+
+    <!-- LEADERBOARD -->
+    <section id="leader" class="card">
+      <h3>تایم‌پلی — برترین‌ها</h3>
+      <div style="margin-top:8px">
+        <input id="search-player" class="input" placeholder="جستجوی نام..." />
+        <table style="margin-top:8px"><thead><tr><th>رتبه</th><th>پلیر</th><th>تایم</th><th>رنک (روز باقی)</th></tr></thead><tbody id="leader-tbody"></tbody></table>
+      </div>
+    </section>
+
+    <!-- CHAT -->
+    <section id="chat" class="card">
+      <h3>چت عمومی</h3>
+      <div class="small" style="margin-top:6px">پیام‌ها در localStorage ذخیره می‌شوند. برای چت واقعی نیاز به بک‌اند (وب‌سوکت) دارید.</div>
+      <div id="chat-box" style="margin-top:8px;max-height:340px;overflow:auto;background:rgba(255,255,255,0.02);padding:8px;border-radius:8px"></div>
+      <div style="margin-top:8px;display:flex;gap:8px">
+        <input id="chat-input" class="input" placeholder="پیام..." />
+        <button class="btn primary" id="chat-send">ارسال</button>
+        <button class="btn ghost" id="chat-clear" title="پاک کردن (ادمین)">پاک کردن</button>
+      </div>
+    </section>
+
+    <!-- PROFILE -->
+    <section id="profile" class="card" style="display:none">
+      <div style="display:flex;gap:12px;align-items:center">
+        <img id="profile-skin-large" class="avatar" style="width:72px;height:72px;border-radius:10px" src="https://minotar.net/avatar/Steve/72" />
+        <div>
+          <div style="font-weight:900;font-size:18px" id="profile-username">—</div>
+          <div class="small" id="profile-rank">رنک: —</div>
+          <div class="small" id="profile-coins">سکه: 0</div>
+          <div class="small" id="profile-playtime">تایم‌پلی: 0h 0m</div>
+        </div>
+      </div>
+      <div style="margin-top:8px;display:flex;gap:8px">
+        <button class="btn primary" id="btn-logout">خروج</button>
+      </div>
+    </section>
+
+    <!-- ADMIN -->
+    <section id="admin" class="card" style="display:none">
+      <h3>پنل مدیریت</h3>
+      <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+        <div class="card-small" style="min-width:240px">
+          <div style="font-weight:800">افزودن پلیر</div>
+          <input id="new-user-username" class="input" placeholder="نام کاربری" />
+          <input id="new-user-pass" class="input" placeholder="رمز عبور" style="margin-top:6px" />
+          <div style="display:flex;gap:6px;margin-top:8px">
+            <button class="btn primary" id="btn-add-player">افزودن</button>
+          </div>
+        </div>
+
+        <div class="card-small" style="min-width:240px">
+          <div style="font-weight:800">وضعیت سرور</div>
+          <div class="small" style="margin-top:6px">فعلا: <span id="admin-server-status">—</span></div>
+          <div style="margin-top:8px;display:flex;gap:6px">
+            <button class="btn" id="btn-set-online">آنلاین</button>
+            <button class="btn ghost" id="btn-set-offline">آفلاین</button>
+          </div>
+        </div>
+
+        <div class="card-small" style="min-width:240px">
+          <div style="font-weight:800">کوپن تخفیف</div>
+          <input id="coupon-code" class="input" placeholder="کد (مثلا EVENT50)" />
+          <input id="coupon-value" class="input" placeholder="مقدار (سکه)" style="margin-top:6px" />
+          <div style="margin-top:8px"><button class="btn primary" id="btn-create-coupon">ایجاد کوپن</button></div>
+          <div style="margin-top:8px"><table id="coupon-table" style="width:100%"></table></div>
+        </div>
+
+        <div class="card-small" style="flex:1;min-width:280px">
+          <div style="font-weight:800">لاگ ادمین</div>
+          <div id="admin-logs" style="max-height:180px;overflow:auto;margin-top:8px"></div>
+        </div>
+      </div>
+
+      <div style="margin-top:12px">
+        <h4>پلیرها و ادمین‌ها</h4>
+        <table id="admin-users-table" style="width:100%"></table>
+      </div>
+
+      <div style="margin-top:12px">
+        <h4>تیکت‌ها</h4>
+        <table id="admin-tickets" style="width:100%"></table>
+      </div>
+
+      <div style="margin-top:12px">
+        <h4>ویرایش قوانین</h4>
+        <button class="btn" id="btn-edit-rules-admin">ویرایش قوانین</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>© Khalij Mine — روبیکا: @khalij_mine</footer>
+</div>
+
+<script>
+/* -------------------------
+   DB در localStorage
+   ------------------------- */
+const STORAGE_KEY = 'km_v10_db_v1';
+const defaultDB = {
+  users: [
+    {id:1,username:'SOL',password:'sol123',isAdmin:true,rank:null,rank_expiry:null,coins:9999,skin:'https://minotar.net/avatar/SOL/40',playtime_minutes:0,role:'Owner',muted_until:null,banned:false},
+    {id:2,username:'oktayparsa',password:'oktay123',isAdmin:true,rank:null,rank_expiry:null,coins:8000,skin:'https://minotar.net/avatar/oktayparsa/40',playtime_minutes:0,role:'Co-Owner',muted_until:null,banned:false},
+    {id:3,username:'Amirhossein',password:'amir123',isAdmin:true,rank:null,rank_expiry:null,coins:5000,skin:'https://minotar.net/avatar/Amirhossein/40',playtime_minutes:0,role:'Manager',muted_until:null,banned:false},
+    {id:4,username:'hossein',password:'hossein123',isAdmin:true,rank:null,rank_expiry:null,coins:3000,skin:'https://minotar.net/avatar/hossein/40',playtime_minutes:0,role:'Builder',muted_until:null,banned:false},
+    {id:100,username:'player1',password:'123',isAdmin:false,rank:null,rank_expiry:null,coins:200,skin:'https://minotar.net/avatar/Steve/40',playtime_minutes:120,role:'Player',muted_until:null,banned:false}
+  ],
+  products: [
+    {id:'r1',title:'VIP',price:100,desc:'رنک VIP — دسترسی ویژه'},
+    {id:'r2',title:'CIP',price:250,desc:'رنک CIP — امکانات اختصاصی'},
+    {id:'r3',title:'Helper',price:50,desc:'رنک Helper — نقش کمکی'}
+  ],
+  orders: [],
+  tickets: [],
+  coupons: [],
+  adminLogs: [],
+  rules: [
+    '۱) احترام به دیگر بازیکنان الزامی است.',
+    '۲) استفاده از چیت/هک ممنوع و منجر به بن دائمی می‌شود.',
+    '۳) تبلیغات بدون اجازه مدیریت ممنوع است.',
+    '۴) مدیریت می‌تواند قوانین را به‌روزرسانی کند.'
+  ],
+  serverStatus: {online:true, playersOnline:0},
+  chat: [] // {user, text, time}
+};
+let DB = loadDB();
+let currentUser = null;
+
+function loadDB(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw){ localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultDB)); return JSON.parse(JSON.stringify(defaultDB)); }
+    return JSON.parse(raw);
+  }catch(e){ console.error(e); localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultDB)); return JSON.parse(JSON.stringify(defaultDB)); }
+}
+function saveDB(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(DB)); }
+
+/* -------------------------
+   SPA navigation
+   ------------------------- */
+const navButtons = document.querySelectorAll('.nav-btn[data-target]');
+navButtons.forEach(b=> b.addEventListener('click', ()=> showSection(b.getAttribute('data-target')) ));
+function setActiveNav(target){ navButtons.forEach(nb=> nb.classList.toggle('active', nb.getAttribute('data-target')===target )); }
+function showSection(id){
+  document.querySelectorAll('section.card').forEach(s=> s.classList.remove('active'));
+  const el = document.getElementById(id);
+  if(el) el.classList.add('active');
+  setActiveNav(id);
+  if(id==='rules') renderRules();
+  if(id==='shop') renderProducts();
+  if(id==='team') renderTeam();
+  if(id==='leader') renderLeaderboard();
+  if(id==='chat') renderChat();
+  if(id==='admin') renderAdminPanel();
+  if(id==='profile') renderProfile();
+}
+
+/* -------------------------
+   Countdown (next Thursday 18:00) - user asked 6 days earlier; keep next Thursday logic */
+function nextThursday18(){
+  const now=new Date();
+  let dow = now.getDay(); // 0 Sunday ... 4 Thursday
+  let daysUntil = (4 - dow + 7) % 7;
+  if(daysUntil === 0){
+    const tToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 18,0,0);
+    if(now >= tToday) daysUntil = 7;
+  }
+  return new Date(now.getFullYear(), now.getMonth(), now.getDate()+daysUntil, 18,0,0);
+}
+let eventTarget = nextThursday18();
+function startCountdown(){
+  const el = document.getElementById('countdown');
+  function tick(){
+    const now=new Date(); let diff = eventTarget - now;
+    if(diff<=0){ el.textContent='ایونت در حال اجراست!'; return; }
+    const d = Math.floor(diff/(1000*60*60*24));
+    const h = Math.floor(diff/(1000*60*60))%24;
+    const m = Math.floor(diff/(1000*60))%60;
+    const s = Math.floor(diff/1000)%60;
+    el.textContent = `${d} روز ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  }
+  tick(); setInterval(tick,1000);
+}
+startCountdown();
+
+/* -------------------------
+   Rules (editable by admin)
+   ------------------------- */
+function renderRules(){
+  document.getElementById('rules-content').innerHTML = DB.rules.map((r,i)=> `<div style="margin-bottom:6px">${i+1}. ${escapeHtml(r)}</div>`).join('');
+  document.getElementById('rules-editor').style.display = 'none';
+  document.getElementById('rules-content').style.display = 'block';
+  const canEdit = currentUser && currentUser.isAdmin;
+  document.getElementById('edit-rules-btn').style.display = canEdit ? 'inline-block' : 'none';
+  document.getElementById('save-rules-btn').style.display = 'none';
+}
+document.getElementById('edit-rules-btn').onclick = ()=>{
+  document.getElementById('rules-editor').style.display='block';
+  document.getElementById('rules-content').style.display='none';
+  document.getElementById('rules-editor').value = DB.rules.join("\n");
+  document.getElementById('save-rules-btn').style.display='inline-block';
+};
+document.getElementById('save-rules-btn').onclick = ()=>{
+  const txt = document.getElementById('rules-editor').value.trim();
+  DB.rules = txt.split('\n').map(s=>s.trim()).filter(s=>s);
+  saveDB(); renderRules(); pushLog('قوانین به‌روزرسانی شد توسط '+currentUser.username);
+};
+
+/* -------------------------
+   Products / Shop (rank = 30 days)
+   ------------------------- */
+function renderProducts(){
+  const wrap = document.getElementById('products'); wrap.innerHTML = '';
+  DB.products.forEach(p=>{
+    const div = document.createElement('div'); div.className='card-small';
+    const btnId = 'buy-'+p.id;
+    div.innerHTML = `<div style="font-weight:800">${escapeHtml(p.title)}</div><div class="small" style="margin-top:6px">${escapeHtml(p.desc)}</div>
+      <div style="margin-top:8px;display:flex;justify-content:space-between;align-items:center">
+        <div style="font-weight:900">${p.price} سکه</div>
+        <div><button class="btn primary" id="${btnId}">خرید</button></div>
+      </div>`;
+    wrap.appendChild(div);
+    document.getElementById(btnId).addEventListener('click', ()=> buyProduct(p.id) );
+  });
+}
+function buyProduct(pid){
+  const prod = DB.products.find(x=>x.id===pid); if(!prod) return alert('محصول پیدا نشد');
+  if(!currentUser) return alert('برای خرید باید وارد شوی');
+  if(currentUser.banned) return alert('شما مسدود شده‌اید و نمی‌توانید خرید انجام دهید');
+  // only one active rank
+  if(currentUser.rank && currentUser.rank_expiry && new Date(currentUser.rank_expiry) > new Date()) return alert('شما در حال حاضر یک رنک فعال دارید.');
+  if(currentUser.coins < prod.price) return alert('سکه کافی نیست');
+  if(!confirm(`آیا مایل به خرید ${prod.title} به قیمت ${prod.price} سکه هستید؟`)) return;
+  currentUser.coins -= prod.price;
+  currentUser.rank = prod.title;
+  const exp = new Date(); exp.setDate(exp.getDate()+30);
+  currentUser.rank_expiry = exp.toISOString();
+  const oid = (DB.orders.reduce((m,o)=>Math.max(m,o.id||0),0)||0)+1;
+  DB.orders.push({id:oid,user_id:currentUser.id,total:prod.price,created_at:new Date().toISOString(),items:[{id:prod.id,qty:1,price:prod.price}]});
+  saveDB(); renderProfile(); renderProducts(); pushLog(`خرید ${prod.title} توسط ${currentUser.username}`);
+  alert('خرید موفق — رنک فعال شد تا ' + new Date(currentUser.rank_expiry).toLocaleDateString());
+}
+
+/* -------------------------
+   Team rendering
+   ------------------------- */
+function renderTeam(){
+  const wrap = document.getElementById('team-list'); wrap.innerHTML = '';
+  DB.users.filter(u=>u.isAdmin).forEach(u=>{
+    const d = document.createElement('div'); d.className='card-small'; d.style.minWidth='150px';
+    d.innerHTML = `<div style="text-align:center"><img src="${u.skin||'https://minotar.net/avatar/Steve/80'}" style="width:80px;height:80px;border-radius:8px" /></div>
+      <div style="text-align:center;margin-top:8px;font-weight:800">${escapeHtml(u.username)}</div>
+      <div class="small" style="text-align:center">${escapeHtml(u.role||'Admin')}</div>`;
+    wrap.appendChild(d);
+  });
+}
+
+/* -------------------------
+   Leaderboard
+   ------------------------- */
+function renderLeaderboard(filter=''){
+  const tbody = document.getElementById('leader-tbody'); tbody.innerHTML='';
+  const players = DB.users.filter(u=> !u.isAdmin).slice().sort((a,b)=> (b.playtime_minutes||0) - (a.playtime_minutes||0));
+  const list = filter ? players.filter(p=> p.username.toLowerCase().includes(filter.toLowerCase())) : players;
+  list.forEach((p,i)=>{
+    const days = activeRankDaysRemaining(p);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${i+1}</td>
+      <td style="display:flex;gap:8px;align-items:center"><img src="${p.skin||'https://minotar.net/avatar/Steve/40'}" class="avatar" /> <div style="font-weight:800">${escapeHtml(p.username)}</div></td>
+      <td>${Math.floor((p.playtime_minutes||0)/60)}h ${(p.playtime_minutes||0)%60}m</td>
+      <td>${p.rank ? escapeHtml(p.rank) + (days>0 ? ' ('+days+' روز)' : '') : '-'}</td>`;
+    tbody.appendChild(tr);
+  });
+  if(list.length===0) tbody.innerHTML = `<tr><td colspan="4" class="small">هیچ بازیکنی موجود نیست.</td></tr>`;
+}
+document.getElementById('search-player').addEventListener('input', (e)=> renderLeaderboard(e.target.value));
+
+/* -------------------------
+   Chat with mute & ban
+   ------------------------- */
+function renderChat(){
+  const box = document.getElementById('chat-box'); box.innerHTML='';
+  DB.chat.slice(-300).forEach(m=>{
+    const d = new Date(m.time);
+    const u = DB.users.find(x=>x.username===m.user) || {skin:'https://minotar.net/avatar/Steve/40'};
+    const el = document.createElement('div');
+    el.style.marginBottom='8px';
+    el.innerHTML = `<div style="display:flex;gap:8px;align-items:center"><img src="${u.skin}" class="avatar" style="width:28px;height:28px" /><div><div style="font-weight:700">${escapeHtml(m.user)} <span class="small" style="font-weight:400;margin-right:6px">${d.toLocaleString()}</span></div><div class="small">${escapeHtml(m.text)}</div></div></div>`;
+    box.appendChild(el);
+  });
+  box.scrollTop = box.scrollHeight;
+}
+document.getElementById('chat-send').addEventListener('click', ()=>{
+  const txt = document.getElementById('chat-input').value.trim();
+  if(!txt) return;
+  if(!currentUser) return alert('برای ارسال پیام باید وارد شوی');
+  if(currentUser.banned) return alert('شما بن شده‌اید و نمی‌توانید پیام بدهید');
+  // check muted
+  if(currentUser.muted_until && new Date(currentUser.muted_until) > new Date()){
+    const mins = Math.ceil((new Date(currentUser.muted_until) - new Date())/60000);
+    return alert('شما میوت هستید. تا ' + mins + ' دقیقه دیگر نمی‌توانید پیام ارسال کنید');
+  }
+  DB.chat.push({user: currentUser.username, text: txt, time: new Date().toISOString()});
+  saveDB(); document.getElementById('chat-input').value=''; renderChat();
+});
+document.getElementById('chat-clear').addEventListener('click', ()=>{
+  if(!currentUser || !currentUser.isAdmin) return alert('فقط ادمین می‌تواند چت را پاک کند');
+  if(!confirm('پاک کردن تمام پیام‌ها؟')) return;
+  DB.chat = []; saveDB(); renderChat(); pushLog('چت پاک شد توسط '+currentUser.username);
+});
+renderChat();
+
+/* -------------------------
+   Tickets (simple)
+   ------------------------- */
+function submitTicketUI(){
+  if(!currentUser) return alert('برای ارسال تیکت باید وارد شوید');
+  const title = prompt('عنوان تیکت:'); if(!title) return;
+  const body = prompt('شرح مشکل:'); if(!body) return;
+  const id = (DB.tickets.reduce((m,t)=>Math.max(m,t.id||0),0)||0)+1;
+  DB.tickets.push({id,user_id:currentUser.id,user:currentUser.username,title,body,status:'open',replies:[],created_at:new Date().toISOString()});
+  saveDB(); pushLog('تیکت جدید توسط '+currentUser.username+' — '+title); alert('تیکت ارسال شد');
+}
+
+/* -------------------------
+   Admin functions: mute, ban, give coins, set rank
+   ------------------------- */
+function renderAdminPanel(){
+  if(!currentUser || !currentUser.isAdmin) return alert('فقط ادمین');
+  renderCoupons(); renderLogs(); renderTicketsAdmin();
+  const tbl = document.getElementById('admin-users-table'); tbl.innerHTML = '<tr><th>نام</th><th>سکه</th><th>رنک</th><th>روز باقی</th><th>میوت</th><th>بن</th><th>عملیات</th></tr>';
+  DB.users.forEach(u=>{
+    const days = activeRankDaysRemaining(u);
+    const muted = (u.muted_until && new Date(u.muted_until) > new Date()) ? ('فعال تا '+ new Date(u.muted_until).toLocaleString()) : '-';
+    const banned = u.banned ? 'بله' : 'خیر';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td style="display:flex;gap:8px;align-items:center"><img src="${u.skin||'https://minotar.net/avatar/Steve/40'}" class="avatar" /> <div style="font-weight:800">${escapeHtml(u.username)}${u.isAdmin ? ' <span class="small">('+escapeHtml(u.role||'Admin')+')</span>' : ''}</div></td>
+      <td>${u.coins}</td><td>${u.rank||'-'}</td><td>${days>0?days+' روز':'-'}</td><td>${muted}</td><td>${banned}</td>
+      <td>
+        <button class="btn" onclick="adminGiveCoins(${u.id},100)">+100</button>
+        <button class="btn ghost" onclick="adminGiveCoins(${u.id},-100)">-100</button>
+        <button class="btn" onclick="adminSetRank(${u.id})">رنک</button>
+        <button class="btn warn" onclick="adminMute(${u.id})">میوت</button>
+        <button class="btn ghost" onclick="adminUnmute(${u.id})">آن‌میوت</button>
+        <button class="btn warn" onclick="adminBan(${u.id})">بن</button>
+        <button class="btn ghost" onclick="adminUnban(${u.id})">آن‌بن</button>
+      </td>`;
+    tbl.appendChild(tr);
+  });
+}
+window.adminGiveCoins = function(uid, delta){
+  if(!currentUser || !currentUser.isAdmin) return alert('فقط ادمین');
+  const user = DB.users.find(u=>u.id===uid); if(!user) return;
+  user.coins = Math.max(0, (user.coins||0) + delta);
+  saveDB(); renderAdminPanel(); pushLog(`${currentUser.username} ${delta>0? 'به':'از'} ${user.username} ${Math.abs(delta)} سکه ${delta>0? 'داد':'کاست'}`);
+}
+window.adminSetRank = function(uid){
+  if(!currentUser || !currentUser.isAdmin) return alert('فقط ادمین');
+  const user = DB.users.find(u=>u.id===uid); if(!user) return;
+  const r = prompt('رنک جدید را وارد کنید (خالی = حذف رنک):');
+  if(r === null) return;
+  if(r.trim()===''){ user.rank = null; user.rank_expiry = null; saveDB(); renderAdminPanel(); pushLog(`${currentUser.username} رنک ${user.username} را حذف کرد`); return; }
+  const exp = new Date(); exp.setDate(exp.getDate()+30);
+  user.rank = r.trim(); user.rank_expiry = exp.toISOString(); saveDB(); renderAdminPanel(); pushLog(`${currentUser.username} به ${user.username} رنک ${r} داد (۳۰ روز)`); alert('رنک تنظیم شد');
+}
+window.adminMute = function(uid){
+  if(!currentUser || !currentUser.isAdmin) return alert('فقط ادمین');
+  const user = DB.users.find(u=>u.id===uid); if(!user) return;
+  const mins = parseInt(prompt('میوت برای چند دقیقه؟ (مثال: 60)')||'0');
+  if(!mins || mins<=0) return;
+  const until = new Date(); until.setMinutes(until.getMinutes() + mins);
+  user.muted_until = until.toISOString(); saveDB(); renderAdminPanel(); pushLog(`${currentUser.username} میوت ${mins} دقیقه به ${user.username} داد`);
+  alert('کاربر تا ' + until.toLocaleString() + ' میوت شد');
+}
+window.adminUnmute = function(uid){
+  if(!currentUser || !currentUser.isAdmin) return alert('فقط ادمین');
+  const user = DB.users.find(u=>u.id===uid); if(!user) return;
+  user.muted_until = null; saveDB(); renderAdminPanel(); pushLog(`${currentUser.username} آن‌میوت کرد ${user.username}`);
+  alert('میوت کاربر برداشته شد');
+}
+window.adminBan = function(uid){
+  if(!currentUser || !currentUser.isAdmin) return alert('فقط ادمین');
+  const user = DB.users.find(u=>u.id===uid); if(!user) return;
+  if(!confirm('آیا مطمئنی که می‌خواهی کاربر را بن کنی؟')) return;
+  user.banned = true; saveDB(); renderAdminPanel(); pushLog(`${currentUser.username} بن کرد ${user.username}`); alert('کاربر بن شد');
+}
+window.adminUnban = function(uid){
+  if(!currentUser || !currentUser.isAdmin) return alert('فقط ادمین');
+  const user = DB.users.find(u=>u.id===uid); if(!user) return;
+  user.banned = false; saveDB(); renderAdminPanel(); pushLog(`${currentUser.username} آن‌بن کرد ${user.username}`); alert('بن کاربر برداشته شد');
+}
+
+/* -------------------------
+   Tickets admin view
+   ------------------------- */
+function renderTicketsAdmin(){
+  const table = document.getElementById('admin-tickets');
+  table.innerHTML = '<tr><th>id</th><th>کاربر</th><th>عنوان</th><th>وضعیت</th><th>عمل</th></tr>';
+  DB.tickets.forEach(t=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${t.id}</td><td>${escapeHtml(t.user)}</td><td>${escapeHtml(t.title)}</td><td>${t.status}</td>
+      <td><button class="btn" onclick="replyTicket(${t.id})">پاسخ / بستن</button></td>`;
+    table.appendChild(tr);
+  });
+}
+window.replyTicket = function(tid){
+  const t = DB.tickets.find(x=>x.id===tid); if(!t) return alert('تیکت پیدا نشد');
+  const reply = prompt('پاسخ به تیکت (خالی = فقط بستن):');
+  if(reply && reply.trim()){ t.replies.push({by: currentUser.username, text: reply, time: new Date().toISOString()}); pushLog('پاسخ تیکت #'+tid+' توسط '+currentUser.username); }
+  if(confirm('بستن تیکت؟')){ t.status='closed'; pushLog('تیکت #'+tid+' بسته شد'); }
+  saveDB(); renderTicketsAdmin();
+}
+
+/* -------------------------
+   Coupons
+   ------------------------- */
+document.getElementById('btn-create-coupon').addEventListener('click', ()=>{
+  if(!currentUser || !currentUser.isAdmin) return alert('فقط ادمین');
+  const code = document.getElementById('coupon-code').value.trim();
+  const val = parseInt(document.getElementById('coupon-value').value.trim()||'0');
+  if(!code || !val) return alert('کد و مقدار لازم است');
+  if(DB.coupons.find(c=>c.code.toLowerCase()===code.toLowerCase())) return alert('کد تکراری');
+  DB.coupons.push({code, value: val, created_at: new Date().toISOString()});
+  saveDB(); renderCoupons(); pushLog('کوپن ساخته شد: '+code);
+  alert('کوپن ساخته شد');
+});
+function renderCoupons(){
+  const t = document.getElementById('coupon-table'); if(!t) return;
+  t.innerHTML = '<tr><th>کد</th><th>مقدار</th></tr>';
+  DB.coupons.forEach(c=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${escapeHtml(c.code)}</td><td>${c.value} سکه</td>`; t.appendChild(tr); });
+}
+
+/* -------------------------
+   Logs
+   ------------------------- */
+function pushLog(msg){
+  DB.adminLogs = DB.adminLogs || [];
+  DB.adminLogs.push({time:new Date().toISOString(), msg});
+  saveDB(); renderLogs();
+}
+function renderLogs(){
+  const box = document.getElementById('admin-logs'); if(!box) return;
+  box.innerHTML = (DB.adminLogs||[]).slice().reverse().map(x=>`<div class="small">${new Date(x.time).toLocaleString()} — ${escapeHtml(x.msg)}</div>`).join('');
+}
+renderLogs();
+
+/* -------------------------
+   Profile / Auth
+   ------------------------- */
+function activeRankDaysRemaining(user){
+  if(!user || !user.rank_expiry) return 0;
+  const diff = new Date(user.rank_expiry) - new Date(); if(diff<=0) return 0; return Math.ceil(diff/(1000*60*60*24));
+}
+function renderProfile(){
+  if(!currentUser){ document.getElementById('profile').style.display='none'; return; }
+  document.getElementById('profile').style.display='block';
+  document.getElementById('profile-username').textContent = currentUser.username;
+  document.getElementById('profile-coins').textContent = 'سکه: ' + (currentUser.coins||0);
+  const skin = currentUser.skin || 'https://minotar.net/avatar/Steve/72';
+  document.getElementById('profile-skin-large').src = skin;
+  const days = activeRankDaysRemaining(currentUser);
+  document.getElementById('profile-rank').textContent = currentUser.rank ? `${currentUser.rank} — ${days} روز باقی` : 'بدون رنک فعال';
+  const play = currentUser.playtime_minutes || 0;
+  document.getElementById('profile-playtime').textContent = 'تایم‌پلی: ' + Math.floor(play/60) + 'h ' + (play%60) + 'm';
+}
+
+/* login prompt (simple) */
+document.getElementById('btn-login').addEventListener('click', ()=> openLoginPrompt());
+document.getElementById('cta-login').addEventListener('click', ()=> openLoginPrompt());
+function openLoginPrompt(){
+  const user = prompt('نام کاربری:'); if(user===null) return;
+  const pass = prompt('رمز عبور:'); if(pass===null) return;
+  doLogin(user.trim(), pass.trim());
+}
+function doLogin(username, password){
+  const u = DB.users.find(x=>x.username===username && x.password===password);
+  if(!u) return alert('نام کاربری یا رمز اشتباه');
+  if(u.banned) return alert('این حساب بن شده و اجازه ورود ندارد');
+  currentUser = u; sessionStorage.setItem('km_current_user', currentUser.username); saveDB(); afterLogin();
+}
+function afterLogin(){
+  renderProfile(); renderServerStatus(); renderProducts(); renderTeam(); renderChat(); renderLeaderboard();
+  if(currentUser.isAdmin){ showSection('admin'); } else { showSection('profile'); }
+  pushLog('ورود: '+currentUser.username);
+  renderAdminPanel();
+}
+/* logout */
+document.getElementById('btn-logout').addEventListener('click', ()=>{ currentUser=null; sessionStorage.removeItem('km_current_user'); document.getElementById('profile').style.display='none'; showSection('home'); });
+
+/* -------------------------
+   Server status
+   ------------------------- */
+function renderServerStatus(){
+  document.getElementById('server-status').textContent = DB.serverStatus.online ? 'آنلاین' : 'آفلاین';
+  document.getElementById('admin-server-status').textContent = DB.serverStatus.online ? 'آنلاین' : 'آفلاین';
+}
+document.getElementById('btn-set-online').addEventListener('click', ()=> setServerStatus(true));
+document.getElementById('btn-set-offline').addEventListener('click', ()=> setServerStatus(false));
+function setServerStatus(flag){
+  if(!currentUser || !currentUser.isAdmin) return alert('فقط ادمین');
+  DB.serverStatus.online = !!flag; saveDB(); renderServerStatus(); pushLog('وضعیت سرور به '+(flag? 'آنلاین':'آفلاین')+' تغییر کرد توسط '+currentUser.username);
+}
+
+/* -------------------------
+   Add player (admin)
+   ------------------------- */
+document.getElementById('btn-add-player').addEventListener('click', ()=>{
+  if(!currentUser || !currentUser.isAdmin) return alert('فقط ادمین');
+  const u = document.getElementById('new-user-username').value.trim();
+  const p = document.getElementById('new-user-pass').value.trim();
+  if(!u || !p) return alert('نام کاربری و رمز لازم است');
+  if(DB.users.find(x=>x.username===u)) return alert('نام کاربری تکراری است');
+  const nid = (DB.users.reduce((m,x)=>Math.max(m,x.id||0),0)||0)+1;
+  const user = {id:nid,username:u,password:p,isAdmin:false,rank:null,rank_expiry:null,coins:0,skin:`https://minotar.net/avatar/${encodeURIComponent(u)}/40`,playtime_minutes:0,role:'Player',muted_until:null,banned:false};
+  DB.users.push(user); saveDB(); renderAdminPanel(); pushLog('پلیر ساخته شد: '+u+' توسط '+currentUser.username);
+  alert('پلیر ساخته شد: ' + u);
+});
+
+/* -------------------------
+   Coupons apply
+   ------------------------- */
+document.getElementById('apply-coupon').addEventListener('click', ()=>{
+  const code = document.getElementById('coupon-input').value.trim(); if(!code) return alert('کد را وارد کنید');
+  const c = DB.coupons.find(x=> x.code.toLowerCase() === code.toLowerCase()); if(!c) return alert('کوپن نامعتبر');
+  if(!currentUser) return alert('برای استفاده از کوپن باید وارد شوی');
+  currentUser.coins += c.value; saveDB(); renderProfile(); pushLog(`${currentUser.username} کوپن ${c.code} استفاده کرد`); alert('کوپن اعمال شد — ' + c.value + ' سکه');
+});
+
+/* -------------------------
+   Utility / Helpers
+   ------------------------- */
+function escapeHtml(s){ return String(s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+function activeRankDaysRemaining(user){
+  if(!user || !user.rank_expiry) return 0;
+  const diff = new Date(user.rank_expiry) - new Date(); if(diff<=0) return 0; return Math.ceil(diff/(1000*60*60*24));
+}
+
+/* -------------------------
+   Tickets admin helper
+   ------------------------- */
+function renderTicketsAdmin(){ /* implemented earlier in renderAdminPanel call chain */ }
+
+/* -------------------------
+   Initialization: render views
+   ------------------------- */
+function renderAdminPanel(){ renderAdminPanelInner(); } // forward
+function renderAdminPanelInner(){
+  if(!currentUser || !currentUser.isAdmin) return;
+  // (function body already above as renderAdminPanel) - call that implementation:
+  // To avoid duplication, call the function defined earlier
+  // but we already defined window.adminGiveCoins etc. So reuse code path by constructing UI:
+  // we'll simply call renderAdminPanel implementation by reusing code: (just call the function body)
+  // For simplicity, call the global function defined earlier.
+  // (Above we defined window.adminGiveCoins and related; now rebuild table)
+  const tbl = document.getElementById('admin-users-table'); tbl.innerHTML = '<tr><th>نام</th><th>سکه</th><th>رنک</th><th>روز باقی</th><th>میوت</th><th>بن</th><th>عملیات</th></tr>';
+  DB.users.forEach(u=>{
+    const days = activeRankDaysRemaining(u);
+    const muted = (u.muted_until && new Date(u.muted_until) > new Date()) ? ('فعال تا '+ new Date(u.muted_until).toLocaleString()) : '-';
+    const banned = u.banned ? 'بله' : 'خیر';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td style="display:flex;gap:8px;align-items:center"><img src="${u.skin||'https://minotar.net/avatar/Steve/40'}" class="avatar" /> <div style="font-weight:800">${escapeHtml(u.username)}${u.isAdmin ? ' <span class="small">('+escapeHtml(u.role||'Admin')+')</span>' : ''}</div></td>
+      <td>${u.coins}</td><td>${u.rank||'-'}</td><td>${days>0?days+' روز':'-'}</td><td>${muted}</td><td>${banned}</td>
+      <td>
+        <button class="btn" onclick="adminGiveCoins(${u.id},100)">+100</button>
+        <button class="btn ghost" onclick="adminGiveCoins(${u.id},-100)">-100</button>
+        <button class="btn" onclick="adminSetRank(${u.id})">رنک</button>
+        <button class="btn warn" onclick="adminMute(${u.id})">میوت</button>
+        <button class="btn ghost" onclick="adminUnmute(${u.id})">آن‌میوت</button>
+        <button class="btn warn" onclick="adminBan(${u.id})">بن</button>
+        <button class="btn ghost" onclick="adminUnban(${u.id})">آن‌بن</button>
+      </td>`;
+    tbl.appendChild(tr);
+  });
+  renderCoupons(); renderLogs(); renderTicketsAdmin();
+}
+
+/* -------------------------
+   Expose some globals for inline use
+   ------------------------- */
+window.renderProfile = renderProfile;
+window.renderAdminPanel = renderAdminPanelInner;
+window.renderChat = renderChat;
+window.renderLeaderboard = renderLeaderboard;
+window.renderTeam = renderTeam;
+window.renderProducts = renderProducts;
+
+/* -------------------------
+   Restore session if exists
+   ------------------------- */
+(function trySession(){
+  const uname = sessionStorage.getItem('km_current_user');
+  if(uname){
+    const u = DB.users.find(x=>x.username===uname);
+    if(u && !u.banned){ currentUser = u; afterLogin(); }
+  }
+})();
+
+/* initial render */
+renderRules(); renderTeam(); renderProducts(); renderLeaderboard(); renderChat(); renderCoupons(); renderLogs(); renderServerStatus();
+
+</script>
+</body>
+</html>
