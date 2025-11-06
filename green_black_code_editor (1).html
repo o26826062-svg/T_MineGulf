@@ -1,0 +1,156 @@
+<html lang="fa"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>کد ادیتور — تم سبز و مشکی</title>
+  <style>
+    :root{--bg:#0b0b0b;--panel:#071009;--neon:#00ff66;--muted:#9aa5a1}
+    html,body{height:100%;margin:0;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;background:linear-gradient(180deg,var(--bg),#030303);color:var(--neon);direction:rtl}
+    .wrap{max-width:980px;margin:24px auto;padding:18px;background:linear-gradient(180deg,rgba(0,0,0,0.6),rgba(0,0,0,0.4));border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.7)}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    h1{font-size:18px;margin:0;color:var(--neon)}
+    .controls{display:flex;gap:8px;align-items:center}
+    button{background:transparent;border:1px solid rgba(0,255,102,0.12);color:var(--neon);padding:8px 12px;border-radius:8px;cursor:pointer}
+    button:hover{box-shadow:0 4px 18px rgba(0,255,102,0.06)}
+    .editor-row{display:grid;grid-template-columns:1fr 360px;gap:16px;margin-top:14px}
+    textarea{width:100%;height:420px;background:transparent;border:1px solid rgba(0,255,102,0.08);padding:12px;border-radius:8px;color:var(--neon);resize:vertical;font-size:14px;line-height:1.4}
+    .sidebar{background:var(--panel);padding:12px;border-radius:8px;height:420px;overflow:auto}
+    .output{min-height:120px;border-radius:8px;padding:10px;background:#020202;border:1px solid rgba(0,255,102,0.06);margin-top:12px}
+    .message{padding:10px;border-radius:8px;margin-bottom:8px;background:linear-gradient(90deg,rgba(0,255,102,0.04),transparent);color:var(--neon)}
+    .hint{color:var(--muted);font-size:13px}
+    .footer{display:flex;gap:8px;align-items:center;margin-top:12px}
+    .small{font-size:13px;color:var(--muted)}
+    .download{background:linear-gradient(90deg,#022 0%,rgba(0,0,0,0.2));border:1px solid rgba(0,255,102,0.14)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>ادیتور کد — تم سبز/مشکی</h1>
+      <div class="controls">
+        <button id="runBtn">اجرا</button>
+        <button id="clearBtn">پاک</button>
+        <button id="sampleBtn">نمونه</button>
+        <button id="downloadBtn" class="download">دانلود فایل</button>
+      </div>
+    </header>
+
+    <div class="editor-row">
+      <div>
+        <label class="hint">اینجا می‌تونی هرچقدر خواستی کد یا متن بنویسی — هر خط یک "دستور" فرض میشه.</label>
+        <textarea id="editor" spellcheck="false">hacking oktay parsa
+say Hello world
+hacking ali
+</textarea>
+
+        <div class="output" id="output"><div class="message">ali l;l; هک شد</div><div class="message">سلام دنیا</div><div class="message">اوکتای پارسا هک شد</div><div class="message">ali l;l; هک شد</div><div class="message">سلام دنیا</div><div class="message">اوکتای پارسا هک شد</div><div class="message">ali l;l; هک شد</div><div class="message">سلام دنیا</div><div class="message">اوکتای پارسا هک شد</div><div class="message">ali l;l; هک شد</div><div class="message">سلام دنیا</div><div class="message">اوکتای پارسا هک شد</div><div class="message">ali l;l; هک شد</div><div class="message">سلام دنیا</div><div class="message">اوکتای پارسا هک شد</div><div class="message">ali l;l; هک شد</div><div class="message">سلام دنیا</div><div class="message">اوکتای پارسا هک شد</div><div class="message">علی هک شد</div><div class="message">سلام دنیا</div><div class="message">اوکتای پارسا هک شد</div><div class="message">علی هک شد</div><div class="message">سلام دنیا</div><div class="message">اوکتای پارسا هک شد</div><div class="message">علی هک شد</div><div class="message">سلام دنیا</div><div class="message">اوکتای پارسا هک شد</div><div class="message">علی هک شد</div><div class="message">سلام دنیا</div><div class="message">اوکتای پارسا هک شد</div><div class="message">علی هک شد</div><div class="message">سلام دنیا</div><div class="message">اوکتای پارسا هک شد</div><div class="message">علی هک شد</div><div class="message">سلام دنیا</div><div class="message">اوکتای پارسا هک شد</div><div class="message">علی هک شد</div><div class="message">سلام دنیا</div><div class="message">اوکتای پارسا هک شد</div><div class="message">علی هک شد</div><div class="message">سلام دنیا</div><div class="message">اوکتای پارسا هک شد</div><div class="message">علی هک شد</div><div class="message">سلام دنیا</div><div class="message">اوکتای پارسا هک شد</div><div class="message">علی هک شد</div><div class="message">سلام دنیا</div><div class="message">اوکتای پارسا هک شد</div><div class="message">علی هک شد</div><div class="message">سلام دنیا</div><div class="message">اوکتای پارسا هک شد</div><div class="message">علی هک شد</div><div class="message">سلام دنیا</div><div class="message">اوکتای پارسا هک شد</div><div class="message">علی هک شد</div><div class="message">سلام دنیا</div><div class="message">اوکتای پارسا هک شد</div><div class="message">علی هک شد</div><div class="message">سلام دنیا</div><div class="message">اوکتای پارسا هک شد</div><div class="message">علی هک شد</div><div class="message">سلام دنیا</div><div class="message">اوکتای پارسا هک شد</div><div class="message">علی هک شد</div><div class="message">سلام دنیا</div><div class="message">اوکتای پارسا هک شد</div><div class="message">علی هک شد</div><div class="message">سلام دنیا</div><div class="message">اوکتای پارسا هک شد</div><div class="message">علی هک شد</div><div class="message">سلام دنیا</div><div class="message">اوکتای پارسا هک شد</div><div class="message">علی هک شد</div><div class="message">سلام دنیا</div><div class="message">اوکتای پارسا هک شد</div><div class="message">علی هک شد</div><div class="message">سلام دنیا</div><div class="message">اوکتای پارسا هک شد</div><div class="message">علی هک شد</div><div class="message">سلام دنیا</div><div class="message">اوکتای پارسا هک شد</div><div class="message">علی هک شد</div><div class="message">سلام دنیا</div><div class="message">اوکتای پارسا هک شد</div><div class="message">علی هک شد</div><div class="message">سلام دنیا</div><div class="message">اوکتای پارسا هک شد</div><div class="message">علی هک شد</div><div class="message">سلام دنیا</div><div class="message">اوکتای پارسا هک شد</div><div class="message">علی هک شد</div><div class="message">سلام دنیا</div><div class="message">اوکتای پارسا هک شد</div><div class="message">علی هک شد</div><div class="message">سلام دنیا</div><div class="message">اوکتای پارسا هک شد</div><div class="message">علی هک شد</div><div class="message">سلام دنیا</div><div class="message">اوکتای پارسا هک شد</div><div class="message">علی هک شد</div><div class="message">سلام دنیا</div><div class="message">اوکتای پارسا هک شد</div></div>
+        <div class="footer">
+          <div class="small">نکته: این صفحه هیچ عملیاتی روی اینترنت یا سیستم انجام نمی‌دهد — فقط پیام شبیه‌سازی شده نشان می‌دهد.</div>
+        </div>
+      </div>
+
+      <aside class="sidebar">
+        <h3 style="margin-top:0">راهنما</h3>
+        <p class="hint">مثال‌های قابل شناسایی:</p>
+        <div class="message">hacking oktay parsa → نمایش: «اوکتای پارسا هک شد»</div>
+        <div class="message">hacking <em>نام</em> → نمایش: «&lt;نام&gt; هک شد»</div>
+        <div class="message">say &lt;متن&gt; → نمایش متن ساده</div>
+        <p class="hint">با زدن دکمه «اجرا» هر خط پردازش می‌شود. برای هر خط که الگوی «hacking» پیدا شود، یک صدای کوتاه پخش می‌شود (شبیه افکت).</p>
+        <p class="hint">این صفحه صرفاً آموزشی/نمایشی است — هیچ هکی انجام نمی‌شود.</p>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    // mapping latin name -> persian nice form
+    const nameMap = {
+      'oktay parsa': 'اوکتای پارسا',
+      'ali': 'علی',
+      'mohammad': 'محمد'
+    };
+
+    // short beep using WebAudio
+    function beep(duration = 150, type = 'sine', freq = 880) {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = type; o.frequency.value = freq; g.gain.value = 0.04;
+        o.connect(g); g.connect(ctx.destination);
+        o.start();
+        setTimeout(()=>{ o.stop(); ctx.close(); }, duration);
+      } catch (e) { console.warn('audio unavailable', e); }
+    }
+
+    function appendOutput(html) {
+      const out = document.getElementById('output');
+      const div = document.createElement('div');
+      div.className = 'message';
+      div.innerHTML = html;
+      out.prepend(div);
+    }
+
+    function cleanName(raw) {
+      let s = raw.trim();
+      const low = s.toLowerCase();
+      if (nameMap[low]) return nameMap[low];
+      // try to replace dashes/underscores
+      s = s.replace(/[-_]+/g,' ');
+      return s;
+    }
+
+    function processLine(line) {
+      const trimmed = line.trim();
+      if (!trimmed) return;
+      // hacking pattern
+      const hackMatch = trimmed.match(/^hacking\s+(.+)$/i);
+      if (hackMatch) {
+        const rawName = hackMatch[1];
+        const nice = cleanName(rawName);
+        appendOutput(`${nice} هک شد`);
+        beep(180, 'sawtooth', 700);
+        return;
+      }
+      const sayMatch = trimmed.match(/^say\s+(.+)$/i);
+      if (sayMatch) {
+        appendOutput(sayMatch[1]);
+        return;
+      }
+      // unknown command: just echo
+      appendOutput('دستور: «' + trimmed + '» اجرا شد (شبیه‌سازی)');
+    }
+
+    document.getElementById('runBtn').addEventListener('click', ()=>{
+      const txt = document.getElementById('editor').value;
+      const lines = txt.split(/\r?\n/);
+      lines.forEach(processLine);
+    });
+
+    document.getElementById('clearBtn').addEventListener('click', ()=>{
+      document.getElementById('editor').value='';
+      document.getElementById('output').innerHTML='';
+    });
+
+    document.getElementById('sampleBtn').addEventListener('click', ()=>{
+      document.getElementById('editor').value = 'hacking oktay parsa\nsay سلام دنیا\nhacking ali';
+    });
+
+    // simple download of this html (serialize current content)
+    document.getElementById('downloadBtn').addEventListener('click', ()=>{
+      const blob = new Blob([document.documentElement.outerHTML], {type:'text/html;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'green_black_code_editor.html';
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    // allow Ctrl+Enter to run
+    document.getElementById('editor').addEventListener('keydown', (e)=>{
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault(); document.getElementById('runBtn').click();
+      }
+    });
+  </script>
+
+
+</body></html>
